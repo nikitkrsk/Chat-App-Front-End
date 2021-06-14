@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb:vertical {
+  background: #68EDEA;
+}
+::-webkit-scrollbar-thumb:horizontal {
+  background: #68EDEA;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #347776;
+}
