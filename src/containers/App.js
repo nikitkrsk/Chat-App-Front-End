@@ -1,50 +1,67 @@
-import React, { useState, useEffect } from "react";
-import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://localhost:4000";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Switch, withRouter } from "react-router-dom";
 
-function App() {
-  const [response, setResponse] = useState("");
+import { createMuiTheme } from "@material-ui/core/styles";
+import { ThemeProvider } from "@material-ui/styles";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import { CssBaseline } from "@material-ui/core";
+
+// import NavBar from "../components/navbar/index";
+import { themesConfig } from "../themes/main";
+import { Routes } from "../components/routes/routes";
+import { ProtectedRoute } from "../helpers/protectedRoute";
+import { setCurrentPage } from "../components/navbar/store/current_page/CurrentPageActions";
+// import LoadingComponent from "../components/loading/Loading";
+import config from "../config";
+import "../themes/Main.scss";
+
+const App = ({ match, history }) => {
+  const state = useSelector((state) => ({
+    theme: state.changeTheme.theme,
+    // isLoading: state.showLoading.isLoading,
+  }));
+  const theme = createMuiTheme(themesConfig[state.theme]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // socket.emit('new user', userData.id);
-    const yourJWT =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMzk0ZWZlZGEtMGY4YS00NmEyLWJjMGUtYzZmNjQzZGFkOWEyIiwicm9sZSI6ImFkbWluIiwianRpIjoidGNSVmt2SXVsUyIsImlhdCI6MTYyMzY2Njg2NywiZXhwIjoxNjIzNjY2ODk3fQ.Boyy-CRudipmq_n9Bc_oQWxfFsgNwyf-vz1oZhM4bJM";
+    let single = [].concat(...Routes.map((el) => el.components));
+    let pathname = config.DOMAIN;
+    try {
+      pathname = single.filter((el) => el.path === history.location.pathname)[0]
+        .name;
+    } catch {
+      pathname = "Not Found";
+    }
+    document.title = `${pathname} - ${config.DOMAIN} `;
+    dispatch(setCurrentPage(history.location.pathname));
 
-    // Require Bearer Token
-    const socket = socketIOClient(ENDPOINT, {
-      transports: ["websocket"],
-      auth: { token: `Bearer ${yourJWT}` },
-    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history.location.pathname]);
 
-    // Handling token expiration
-    socket.on("connect_error", (error) => {
-      // console.log(error);
-      if (error?.data?.type === "UnauthorizedError") {
-        console.log("User token has expired");
-      }
-    });
-
-    // Listening to events
-    socket.on("login", (data) => {
-      console.log(data);
-    });
-    socket.on("broadcast", (data) => {
-      console.log(data);
-    });
-    socket.on("FromAPI", (data) => {
-      console.log("data", data);
-      setResponse(data);
-    });
-    socket.on("expiredRefresh", (data) => {
-      console.log("data", data);
-      setResponse(data);
-    });
-  }, []);
-  return (
-    <p>
-      It's <time dateTime={response}>{response}</time>
-    </p>
+  const routeComponents = Routes.map((route) =>
+    route.components.map(({ path, component, usersCanSee }, key) => (
+      <ProtectedRoute
+        exact
+        users={usersCanSee}
+        path={path}
+        component={component}
+        key={key}
+      />
+    ))
   );
-}
+  return (
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
 
-export default App;
+        {/* {state.isLoading ? <LoadingComponent /> : ""} */}
+        {/* {state.loggedIn ? <NavBar /> : ""} */}
+        <Switch>{routeComponents}</Switch>
+      </ThemeProvider>
+    </MuiPickersUtilsProvider>
+  );
+};
+
+export default withRouter(App);
