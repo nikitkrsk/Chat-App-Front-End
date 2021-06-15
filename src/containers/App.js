@@ -8,11 +8,12 @@ import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 import { CssBaseline } from "@material-ui/core";
 
-// import NavBar from "../components/navbar/index";
+import NavBar from "../components/navbar/index";
 import { themesConfig } from "../themes/main";
 import { Routes } from "../components/routes/routes";
 import { ProtectedRoute } from "../helpers/protectedRoute";
 import { setCurrentPage } from "../components/navbar/store/current_page/CurrentPageActions";
+import {PageNotifications} from "../components/notifications/notificationsService"
 // import LoadingComponent from "../components/loading/Loading";
 import config from "../config";
 import "../themes/Main.scss";
@@ -20,6 +21,9 @@ import "../themes/Main.scss";
 const App = ({ match, history }) => {
   const state = useSelector((state) => ({
     theme: state.changeTheme.theme,
+    showNotificationMessage: state.showNotification.showNotificationMessage,
+    loggedIn: state.loggedInUser.loggedIn
+
     // isLoading: state.showLoading.isLoading,
   }));
   const theme = createMuiTheme(themesConfig[state.theme]);
@@ -55,9 +59,10 @@ const App = ({ match, history }) => {
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        {state.showNotificationMessage ? <PageNotifications /> : ""}
 
         {/* {state.isLoading ? <LoadingComponent /> : ""} */}
-        {/* {state.loggedIn ? <NavBar /> : ""} */}
+        {state.loggedIn ? <NavBar /> : ""}
         <Switch>{routeComponents}</Switch>
       </ThemeProvider>
     </MuiPickersUtilsProvider>

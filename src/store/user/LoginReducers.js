@@ -4,6 +4,7 @@ const initialState = {
   user: {},
   role: "guest",
   token: "", // TODO not store it in the browser
+  session: "",
   loggedIn: false,
 };
 
@@ -14,6 +15,7 @@ export const loggedInUser = (state = initialState, action = {}) => {
         ...state,
         user: action.payload.user,
         token: action.payload.token,
+        session: action.payload.session,
         loggedIn: true,
       };
     case constants.SET_USER_ROLE:

@@ -45,7 +45,7 @@ const NotFound = (_, context) => {
   React.useEffect(() => {
     const socket = socketIOClient(config.SOCKET_URL, {
       transports: ["websocket"],
-      auth: { token: `Bearer ${state.token}` },
+      query: {token: state.token},
     });
     // Handling token expiration
     socket.on("connect_error", (error) => {
@@ -65,11 +65,16 @@ const NotFound = (_, context) => {
       console.log(data);
     });
     socket.on("FromAPI", (data) => {
-      console.log("data", data);
+      console.log("FromAPI", data);
     });
-    socket.on("expiredRefresh", (data) => {
-      console.log("data", data);
+    socket.on("unauthorized", (data) => {
+      console.log("unauthorized", data);
+      setSocket(data)
     });
+    socket.on('disconnect', data => {
+      console.log('disconnect client event....', data);
+      // setSocket(data)
+   });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (

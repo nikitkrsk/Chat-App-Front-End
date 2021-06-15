@@ -1,10 +1,10 @@
 import jwt_decode from "jwt-decode";
 
 import * as constants from "./LoginConstants";
-// import {
-//   setNotificationMessage,
-//   setShowNotificationMessage,
-// } from "../../../../components/notifications/store/notificationActions";
+import {
+  setNotificationMessage,
+  setShowNotificationMessage,
+} from "../../components/notifications/store/notificationActions";
 import config from "../../config";
 // import { setLoading } from "../../components/loading/store/showLoadingActions";
 export const LoginAction = (params) => (dispatch) => {
@@ -36,8 +36,8 @@ export const LoginAction = (params) => (dispatch) => {
     .catch((error) => {
       console.log(error.message);
       // dispatch(setLoading(false));
-      // dispatch(setNotificationMessage(error.message));
-      // dispatch(setShowNotificationMessage(true));
+      dispatch(setNotificationMessage(error.message));
+      dispatch(setShowNotificationMessage(true));
     });
 };
 
