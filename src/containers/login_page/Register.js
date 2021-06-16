@@ -15,10 +15,11 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import IconButton from "@material-ui/core/IconButton";
 import { fade } from "@material-ui/core/styles/colorManipulator";
 import Link from "@material-ui/core/Link";
+import MuiPhoneNumber from "material-ui-phone-number";
 
 import chat from "../../assets/chat.png";
 
-import { LoginAction } from "../../store/user/LoginActions";
+import { RegisterAction } from "../../store/user/LoginActions";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -57,16 +58,21 @@ const useStyles = makeStyles((theme) => ({
       borderColor: theme.palette.secondary.main,
     },
   },
+  formControl: {
+    margin: theme.spacing(1, 0),
+    minWidth: 300,
+    maxWidth: 300,
+  },
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-  links:{
-    display: 'flex',
-    flexDirection: 'column'
-  }
+  links: {
+    display: "flex",
+    flexDirection: "column",
+  },
 }));
 
-const Login = () => {
+const Register = () => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
@@ -74,11 +80,18 @@ const Login = () => {
   // form
   const formik = useFormik({
     initialValues: {
+      firstName: "",
+      username: "",
+      lastName: "",
       email: "",
       password: "",
+      phone: null,
     },
 
     validationSchema: Yup.object().shape({
+      firstName: Yup.string().required("Name is required"),
+      lastName: Yup.string().required("Last Name is required"),
+      username: Yup.string().required("Username is required"),
       email: Yup.string()
         .email("Enter a valid email")
         .required("Email is required"),
@@ -86,14 +99,22 @@ const Login = () => {
     }),
   });
 
-  const { values, touched, errors, handleChange, handleBlur, isValid, dirty } =
-    formik;
+  const {
+    values,
+    touched,
+    errors,
+    handleChange,
+    setFieldValue,
+    handleBlur,
+    isValid,
+    dirty,
+  } = formik;
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(LoginAction(values));
+    dispatch(RegisterAction(values));
   };
   return (
     <>
@@ -104,10 +125,54 @@ const Login = () => {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Register
             </Typography>
             <form className={classes.form} noValidate onSubmit={handleSubmit}>
-            
+              <TextField
+                required
+                margin="normal"
+                name="firstName"
+                error={touched.firstName && Boolean(errors.firstName)}
+                helperText={touched.firstName ? errors.firstName : ""}
+                label="Name"
+                onBlur={handleBlur}
+                value={values.firstName}
+                onChange={handleChange}
+                variant="outlined"
+                className={classes.formControl}
+                autoComplete="cc-given-name"
+                fullWidth
+              />
+              <TextField
+                required
+                margin="normal"
+                name="lastName"
+                error={touched.lastName && Boolean(errors.lastName)}
+                helperText={touched.lastName ? errors.lastName : ""}
+                label="Last Name"
+                onBlur={handleBlur}
+                value={values.lastName}
+                onChange={handleChange}
+                variant="outlined"
+                className={classes.formControl}
+                autoComplete="cc-family-name"
+                fullWidth
+              />
+              <TextField
+                required
+                margin="normal"
+                name="username"
+                error={touched.username && Boolean(errors.username)}
+                helperText={touched.username ? errors.username : ""}
+                label="Username"
+                onBlur={handleBlur}
+                value={values.username}
+                onChange={handleChange}
+                variant="outlined"
+                className={classes.formControl}
+                autoComplete="cc-family-name"
+                fullWidth
+              />
               <TextField
                 required
                 margin="normal"
@@ -156,6 +221,19 @@ const Login = () => {
                   ),
                 }}
               />
+              <MuiPhoneNumber
+                variant="outlined"
+                name="phone"
+                error={touched.phone && Boolean(errors.phone)}
+                helperText={touched.phone ? errors.phone : ""}
+                label={"Phone"}
+                onBlur={handleBlur}
+                value={values.phone}
+                onChange={(newValue) => {
+                  setFieldValue("phone", newValue ? newValue : "");
+                }}
+                className={classes.formControl}
+              />
               <Button
                 type="submit"
                 fullWidth
@@ -167,19 +245,8 @@ const Login = () => {
                 Sign In
               </Button>
               <div className={classes.links}>
-                {/* TODO <Link
-                  href="/request_reset_password"
-                  variant="body2"
-                  color="secondary"
-                >
-                  Forgot password?
-                </Link> */}
-                <Link
-                  href="/register"
-                  variant="body2"
-                  color="secondary"
-                >
-                 Don't Have Account? Register
+                <Link href="/auth" variant="body2" color="secondary">
+                  Already have an account? Sign in
                 </Link>
               </div>
             </form>
@@ -190,4 +257,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

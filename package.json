@@ -13,7 +13,9 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "date-fns": "^2.22.1",
+    "formik": "^2.2.9",
     "jwt-decode": "^3.1.2",
+    "material-ui-phone-number": "^2.2.6",
     "node-sass": "^6.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -27,7 +29,8 @@
     "redux-thunk": "^2.3.0",
     "sass-loader": "^12.1.0",
     "socket.io-client": "^4.1.2",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^1.0.1",
+    "yup": "^0.32.9"
   },
   "scripts": {
     "start": "react-scripts start",

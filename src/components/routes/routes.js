@@ -5,6 +5,7 @@ import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import PeopleIcon from '@material-ui/icons/People';
 import { authRoles } from "../../helpers/authRoles";
 import SigninPage from "../../containers/login_page/Login";
+import Register from "../../containers/login_page/Register"
 import NotFound from "../../containers/not_found/NotFound"
 // import UnderConstruction from "../under_construction/UnderConstruction"
 export const Routes = [
@@ -72,6 +73,21 @@ export const Routes = [
         usersCanSee: authRoles.only_guest,
         path: "/auth",
         component: SigninPage,
+      },
+    ],
+  },
+  {
+    accordion: false,
+    display: false,
+    name: "Register",
+    icon: ReportIcon,
+    components: [
+      {
+        name: "Login",
+        icon: ReportIcon,
+        usersCanSee: authRoles.only_guest,
+        path: "/register",
+        component: Register,
       },
     ],
   },

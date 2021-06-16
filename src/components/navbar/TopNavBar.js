@@ -11,11 +11,11 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Link from "@material-ui/core/Link";
 
 import { setMenuOpen } from "./store/menu_open/MenuOpenActions";
-// import MenuTopNav from "./topNavBarElements/Menu";
-// import MobileMenuTopNav from "./topNavBarElements/MobileMenu";
+import MenuTopNav from "./topNavBarElements/Menu";
+import MobileMenuTopNav from "./topNavBarElements/MobileMenu";
 import chat from "../../assets/chat.png";
 import config from "../../config";
-
+import socketIOClient from "socket.io-client";
 const drawerWidth = 270;
 
 const useStyles = makeStyles((theme) => ({
@@ -64,6 +64,8 @@ const useStyles = makeStyles((theme) => ({
 const TopNavBar = (props) => {
   const state = useSelector((state) => ({
     menuOpen: state.changeMenuOpen.menuOpen,
+    token: state.loggedInUser.token,
+
   }));
 
   const dispatch = useDispatch();
@@ -73,6 +75,45 @@ const TopNavBar = (props) => {
   const handleDrawerOpen = () => {
     dispatch(setMenuOpen(true));
   };
+
+
+
+  const [socket, setSocket] = React.useState("")
+  React.useEffect(() => {
+    const socket = socketIOClient(config.SOCKET_URL, {
+      transports: ["websocket"],
+      query: {token: state.token},
+    });
+    // Handling token expiration
+    socket.on("connect_error", (error) => {
+      // console.log(error);
+      if (error?.data?.type === "UnauthorizedError") {
+        setSocket("User token has expired")
+        console.log("User token has expired");
+      }
+    });
+
+    // Listening to events
+    socket.on("login", (data) => {
+      setSocket(data)
+      console.log(data);
+    });
+    socket.on("broadcast", (data) => {
+      console.log(data);
+    });
+    socket.on("FromAPI", (data) => {
+      console.log("FromAPI", data);
+    });
+    socket.on("unauthorized", (data) => {
+      console.log("unauthorized", data);
+      setSocket(data)
+    });
+    socket.on('disconnect', data => {
+      console.log('disconnect client event....', data);
+      // setSocket(data)
+   });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -99,16 +140,17 @@ const TopNavBar = (props) => {
           <Link href="/" color="inherit" underline="none">
             <Typography variant="h6" noWrap>
               {config.DOMAIN}
+              {socket}
             </Typography>
           </Link>
 
           <div className={classes.grow} />
-          {/* <div className={classes.sectionDesktop}>
+          <div className={classes.sectionDesktop}>
             <MenuTopNav />
           </div>
           <div className={classes.sectionMobile}>
             <MobileMenuTopNav />
-          </div> */}
+          </div>
         </Toolbar>
       </AppBar>
     </>
