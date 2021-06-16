@@ -11,6 +11,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Link from "@material-ui/core/Link";
 
 import { setMenuOpen } from "./store/menu_open/MenuOpenActions";
+import { LogoutAction } from "../../store/user/LoginActions"
 import MenuTopNav from "./topNavBarElements/Menu";
 import MobileMenuTopNav from "./topNavBarElements/MobileMenu";
 import chat from "../../assets/chat.png";
@@ -105,12 +106,11 @@ const TopNavBar = (props) => {
       console.log("FromAPI", data);
     });
     socket.on("unauthorized", (data) => {
-      console.log("unauthorized", data);
-      setSocket(data)
+      dispatch(LogoutAction())
     });
     socket.on('disconnect', data => {
       console.log('disconnect client event....', data);
-      // setSocket(data)
+      dispatch(LogoutAction())
    });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -86,5 +86,7 @@ export const LogoutAction = () => (dispatch, getState) => {
       }
       dispatch({ type: constants.REQUEST_SIGNOUT_SUCCESS });
     })
-    .catch((error) => {});
+    .catch((error) => {
+      dispatch({ type: constants.REQUEST_SIGNOUT_SUCCESS })
+    });
 };
