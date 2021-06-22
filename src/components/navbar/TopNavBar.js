@@ -90,7 +90,6 @@ const TopNavBar = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
-    console.log("socket", socket);
     // Listening to events
     socket.on("login", (data) => {
       console.log(data);

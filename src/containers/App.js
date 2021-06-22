@@ -62,9 +62,8 @@ const App = ({ match, history }) => {
         <CssBaseline />
         {state.showNotificationMessage && <PageNotifications />}
 
-        {/* {state.isLoading ? <LoadingComponent /> : ""} */}
         <SocketContext.Provider value={getSocket()}>
-          {state.loggedIn ? <NavBar /> : ""}
+          {state.loggedIn && <NavBar />}
           <Switch>{routeComponents}</Switch>
         </SocketContext.Provider>
       </ThemeProvider>

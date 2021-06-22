@@ -45,14 +45,14 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerOpen: {
     width: drawerWidth,
-    border: 'none',
+    border: "none",
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
   drawerClose: {
-    border: 'none',
+    border: "none",
     background: theme.palette.background.paper,
     color: theme.palette.secondary.light,
     transition: theme.transitions.create("width", {
@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
   activePage: {
     background: theme.palette.primary.main,
     "&:hover": {
-      background:  theme.palette.primary.main,
+      background: theme.palette.primary.main,
     },
   },
   activePageOpen: {
@@ -138,11 +138,10 @@ const SideNav = () => {
               button
               key={item.name}
               className={
-                state.currentPage === item.path
-                  ? clsx(classes.activePage, {
-                      [classes.activePageOpen]: state.menuOpen,
-                    })
-                  : ""
+                state.currentPage === item.path &&
+                clsx(classes.activePage, {
+                  [classes.activePageOpen]: state.menuOpen,
+                })
               }
             >
               <ListItemIcon>{<item.icon />}</ListItemIcon>
@@ -211,7 +210,6 @@ const SideNav = () => {
   return (
     <>
       <Drawer
-     
         variant="permanent"
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: state.menuOpen,

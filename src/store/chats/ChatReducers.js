@@ -21,3 +21,21 @@ export const userChats = (state = initialState, action = {}) => {
       return state;
   }
 };
+
+const initialStateChats = {
+  selectedChat: undefined,
+};
+
+export const userChat = (state = initialStateChats, action = {}) => {
+  switch (action.type) {
+    case constants.SET_CHAT:
+      return {
+        ...state,
+        selectedChat: action.payload,
+      };
+    case constants.CLEAR_CHAT:
+      return initialStateChats;
+    default:
+      return state;
+  }
+};

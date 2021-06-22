@@ -22,7 +22,6 @@ export const GetAllChats = () => (dispatch, getState) => {
   fetch(`${config.API_URL}/groups/get_all`, requestOptions)
     .then((response) => response.json())
     .then((json) => {
-      console.log(json)
       if (json.error) {
         throw new Error(json.error);
       }
@@ -35,5 +34,14 @@ export const GetAllChats = () => (dispatch, getState) => {
 };
 
 export const clearChats = () => ({
+  type: constants.CLEAR_CHATS,
+});
+
+export const setChat = (chatInfo) => ({
+  type: constants.SET_CHAT,
+  payload: chatInfo
+});
+
+export const clearChat = () => ({
   type: constants.CLEAR_CHATS,
 });
