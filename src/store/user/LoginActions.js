@@ -1,4 +1,5 @@
 import jwt_decode from "jwt-decode";
+import Cookies from 'universal-cookie';
 
 import * as constants from "./LoginConstants";
 import {
@@ -6,6 +7,7 @@ import {
   setNotificationSeverity,
   setShowNotificationMessage,
 } from "../../components/notifications/store/notificationActions";
+import {clearChats} from "../chats/ChatActions"
 import config from "../../config";
 // import { setLoading } from "../../components/loading/store/showLoadingActions";
 export const LoginAction = (params) => (dispatch) => {
@@ -26,9 +28,15 @@ export const LoginAction = (params) => (dispatch) => {
       try {
         var decoded = jwt_decode(json.token);
         role = decoded.role;
+        const cookies = new Cookies();
+        cookies.set('jwt', json.token, {
+            maxAge: decoded.exp,
+        });
       } catch {
         role = "guest";
       }
+     
+
 
       dispatch({ type: constants.REQUEST_SIGNIN_SUCCESS, payload: json });
       dispatch({ type: constants.SET_USER_ROLE, payload: role });
@@ -37,6 +45,7 @@ export const LoginAction = (params) => (dispatch) => {
     .catch((error) => {
       console.log(error.message);
       // dispatch(setLoading(false));
+
       dispatch(setNotificationMessage(error.message));
       dispatch(setShowNotificationMessage(true));
     });
@@ -84,9 +93,11 @@ export const LogoutAction = () => (dispatch, getState) => {
       if (json.error) {
         throw new Error(json.error);
       }
+      dispatch(clearChats())
       dispatch({ type: constants.REQUEST_SIGNOUT_SUCCESS });
     })
     .catch((error) => {
+      dispatch(clearChats())
       dispatch({ type: constants.REQUEST_SIGNOUT_SUCCESS })
     });
 };

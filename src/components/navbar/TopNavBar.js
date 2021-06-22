@@ -1,4 +1,4 @@
-import React from "react";
+import React, {  useContext, useEffect } from "react";
 import clsx from "clsx";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -9,14 +9,19 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import Link from "@material-ui/core/Link";
-
 import { setMenuOpen } from "./store/menu_open/MenuOpenActions";
-import { LogoutAction } from "../../store/user/LoginActions"
+import { LogoutAction } from "../../store/user/LoginActions";
 import MenuTopNav from "./topNavBarElements/Menu";
 import MobileMenuTopNav from "./topNavBarElements/MobileMenu";
-import chat from "../../assets/chat.png";
+import chat from "../../assets/chatSmall.png";
 import config from "../../config";
-import socketIOClient from "socket.io-client";
+import { SocketContext } from "../../helpers/socket";
+import {
+  setNotificationMessage,
+  setNotificationSeverity,
+  setShowNotificationMessage,
+} from "../../components/notifications/store/notificationActions";
+import { GetAllChats } from "../../store/chats/ChatActions";
 const drawerWidth = 270;
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    background: theme.palette.background.paper
+    background: theme.palette.background.paper,
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -65,9 +70,9 @@ const useStyles = makeStyles((theme) => ({
 const TopNavBar = (props) => {
   const state = useSelector((state) => ({
     menuOpen: state.changeMenuOpen.menuOpen,
-    token: state.loggedInUser.token,
-
+    // token: state.loggedInUser.token,
   }));
+  const socket = useContext(SocketContext);
 
   const dispatch = useDispatch();
 
@@ -79,42 +84,58 @@ const TopNavBar = (props) => {
 
 
 
-  const [socket, setSocket] = React.useState("")
-  React.useEffect(() => {
-    const socket = socketIOClient(config.SOCKET_URL, {
-      transports: ["websocket"],
-      query: {token: state.token},
-    });
-    // Handling token expiration
-    socket.on("connect_error", (error) => {
-      // console.log(error);
-      if (error?.data?.type === "UnauthorizedError") {
-        setSocket("User token has expired")
-        console.log("User token has expired");
-      }
-    });
 
+  useEffect(() => {
+    dispatch(GetAllChats());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    console.log("socket", socket);
     // Listening to events
     socket.on("login", (data) => {
-      setSocket(data)
       console.log(data);
     });
-    socket.on("broadcast", (data) => {
-      console.log(data);
+    socket.on("unauthorized", (_) => {
+      dispatch(LogoutAction());
     });
-    socket.on("FromAPI", (data) => {
-      console.log("FromAPI", data);
-    });
-    socket.on("unauthorized", (data) => {
-      dispatch(LogoutAction())
-    });
-    socket.on('disconnect', data => {
-      console.log('disconnect client event....', data);
-      dispatch(LogoutAction())
-   });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
+    socket.on("loginUsers", (username) => {
+      dispatch(setNotificationMessage(`${username} is online`));
+      dispatch(setShowNotificationMessage(true));
+      dispatch(setNotificationSeverity("info"));
+    });
+
+    socket.on("newPublicChatCreated", (group) => {
+      dispatch(
+        setNotificationMessage(`new Public group was creted. Take a look `)
+      );
+      dispatch(setShowNotificationMessage(true));
+      dispatch(setNotificationSeverity("info"));
+      dispatch(GetAllChats());
+
+    });
+
+    socket.on("newChatCreated", (group) => {
+      dispatch(
+        setNotificationMessage(
+          `You are invited to new private group. Take a look `
+        )
+      );
+      dispatch(setShowNotificationMessage(true));
+      dispatch(setNotificationSeverity("info"));
+      dispatch(GetAllChats());
+    });
+
+    socket.on("systemError", (data) => {
+      dispatch(setNotificationMessage(data));
+      dispatch(setShowNotificationMessage(true));
+      
+    });
+    // CLEAN UP THE EFFECT
+    return () => socket.disconnect();
+    //
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket]);
   return (
     <>
       <AppBar
@@ -136,11 +157,12 @@ const TopNavBar = (props) => {
           >
             <MenuIcon />
           </IconButton>
-          <img src={chat} alt="Chat" width="40" height="40"></img>
-          <Link href="/" color="inherit" underline="none">
+          <img src={chat} alt="Chat" width="50" height="50" />
+          <Link href="/" color={"textPrimary"} underline="none">
             <Typography variant="h6" noWrap>
               {config.DOMAIN}
-              {socket}
+              {/* {socketData} */}
+              {/* <div onClick={createGroup}>create</div> */}
             </Typography>
           </Link>
 

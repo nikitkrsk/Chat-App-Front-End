@@ -10,6 +10,7 @@ import { changeMenuOpen } from "../components/navbar/store/menu_open/MenuOpenRed
 import { changeTheme } from "../components/navbar/store/choose_theme/ChooseThemeReducers";
 import { changeCurrentPage } from "../components/navbar/store/current_page/CurrentPageReducers"
 import { loggedInUser } from "./user/LoginReducers"
+import { userChats } from "./chats/ChatReducers"
 // import { showLoading } from "../components/loading/store/showLoadingReducers";
 const persistConfig = {
   key: "ChatApp",
@@ -17,6 +18,7 @@ const persistConfig = {
     "changeTheme",
     "changeCurrentPage",
     "loggedInUser",
+    "userChats"
   ],
   storage,
 };
@@ -27,6 +29,7 @@ const rootReducer = combineReducers({
   loggedInUser,
   changeMenuOpen,
   i18nState,
+  userChats,
   showNotification,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);

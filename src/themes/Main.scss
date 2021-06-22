@@ -4,20 +4,20 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 2px;
+  height: 2px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb:vertical {
-  background: #68EDEA;
+  background: #2a3f3f;
 }
 ::-webkit-scrollbar-thumb:horizontal {
-  background: #68EDEA;
+  background: #294645;
   border-radius: 10px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #347776;
+  background: #204645;
 }

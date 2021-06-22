@@ -7,6 +7,7 @@ import { authRoles } from "../../helpers/authRoles";
 import SigninPage from "../../containers/login_page/Login";
 import Register from "../../containers/login_page/Register"
 import NotFound from "../../containers/not_found/NotFound"
+import Chats from "../../containers/chats/Chats"
 // import UnderConstruction from "../under_construction/UnderConstruction"
 export const Routes = [
   {
@@ -57,7 +58,7 @@ export const Routes = [
         icon: PeopleIcon,
         usersCanSee: authRoles.all,
         path: "/",
-        component: NotFound,
+        component: Chats,
       },
     ],
   },

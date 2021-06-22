@@ -5,25 +5,25 @@ export const themesConfig = {
     palette: {
       type: "dark",
       primary: {
-        light: "FFFFFF",
-        main: "#010D26",
-        dark: "#021835",
+        light: "#FFFFFF",
+        main: "#7289da",
+        dark: "#99aab5",
       },
       secondary: {
         light: "#ffffff",//"#7d7e7e",
-        main: "#42BADC", //
-        dark: "#F4BF3A",
+        main: "#FFFFFF", //
+        dark: "#2F3136",
         contrastText: "#FFFFFF",
       },
       background: {
-        paper: "#021835",
-        default: "#010D26",
+        paper: "#202225",
+        default: "#23272a",
       },
       error: red,
     },
     props: {
       MuiSvgIcon: {
-        htmlColor: "#42BADC",
+        htmlColor: "#FFFFFF",
       },
     },
     status: {
@@ -40,9 +40,9 @@ export const themesConfig = {
         dark: "#161EB3",
       },
       secondary: {
-        light: "#b9c0da",
+        light: "#000000",
         main: "#4379FF",
-        dark: "#5433FF",
+        dark: "#cacaca",
         contrastText: "#1E1F23",
       },
       background: {

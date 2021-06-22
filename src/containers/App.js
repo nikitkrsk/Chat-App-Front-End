@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Switch, withRouter } from "react-router-dom";
+import { SocketContext, getSocket } from "../helpers/socket";
 
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
@@ -13,7 +14,7 @@ import { themesConfig } from "../themes/main";
 import { Routes } from "../components/routes/routes";
 import { ProtectedRoute } from "../helpers/protectedRoute";
 import { setCurrentPage } from "../components/navbar/store/current_page/CurrentPageActions";
-import {PageNotifications} from "../components/notifications/notificationsService"
+import { PageNotifications } from "../components/notifications/notificationsService";
 // import LoadingComponent from "../components/loading/Loading";
 import config from "../config";
 import "../themes/Main.scss";
@@ -22,7 +23,7 @@ const App = ({ match, history }) => {
   const state = useSelector((state) => ({
     theme: state.changeTheme.theme,
     showNotificationMessage: state.showNotification.showNotificationMessage,
-    loggedIn: state.loggedInUser.loggedIn
+    loggedIn: state.loggedInUser.loggedIn,
 
     // isLoading: state.showLoading.isLoading,
   }));
@@ -59,11 +60,13 @@ const App = ({ match, history }) => {
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {state.showNotificationMessage ? <PageNotifications /> : ""}
+        {state.showNotificationMessage && <PageNotifications />}
 
         {/* {state.isLoading ? <LoadingComponent /> : ""} */}
-        {state.loggedIn ? <NavBar /> : ""}
-        <Switch>{routeComponents}</Switch>
+        <SocketContext.Provider value={getSocket()}>
+          {state.loggedIn ? <NavBar /> : ""}
+          <Switch>{routeComponents}</Switch>
+        </SocketContext.Provider>
       </ThemeProvider>
     </MuiPickersUtilsProvider>
   );
