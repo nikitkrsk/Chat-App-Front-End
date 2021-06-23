@@ -1,4 +1,6 @@
-# Example Fe for Chat App BE application
+# Example Front-End for Chat App
+
+This application is an example for [Chat App Back-End](https://github.com/nikitkrsk/Chat-App)
 
 ### To start project 
 
@@ -7,5 +9,5 @@ npm i
 npm run start
 ```
 
-# BE LINK 
-[BE CAN BE FOUND HERE](https://github.com/nikitkrsk/Chat-App)
+
+
